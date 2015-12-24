@@ -1,14 +1,23 @@
 import bootcamp.BankAccount;
+import bootcamp.MessageSender;
 import org.hamcrest.core.Is;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 public class BankAccountTest {
 
 
     public static final int INITIAL_AMOUT = 500;
+    private MessageSender messageSender;
+
+    @Before
+    public void setup(){
+        messageSender = mock(MessageSender.class);
+    }
 
     @Test
     public void shouldBeAbleToCreateAccountWithMinBalance() throws Exception {
@@ -48,5 +57,14 @@ public class BankAccountTest {
         sandhyAccount.transfer(amountToTransfer, waseemAccount);
 
     }
+
+    @Test
+    public void shouldSendSMSOnWithDrawal() throws Exception {
+        BankAccount bankAccount = new BankAccount(1000);
+        bankAccount.updateMessageSender(messageSender);
+        bankAccount.withDraw(400);
+        verify(messageSender).send();
+    }
+
 
 }
